@@ -1,0 +1,38 @@
+version: '3.8'
+
+networks:
+  app-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+services:
+  frontend:
+    build: 
+      context: ./frontend/vite-project
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend/vite-project:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://backend:5000
+    networks:
+      - app-network
+
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile.backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - FLASK_ENV=development
+      - FLASK_APP=app.py
+      - PYTHONUNBUFFERED=1
+    networks:
+      - app-network
