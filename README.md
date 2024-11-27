@@ -41,7 +41,7 @@ Backend API: http://localhost:5000
 Docker Desktop:
 ![image](https://github.com/user-attachments/assets/b3bdcd49-47fe-4c19-adf0-59e738d87351)
 
-Project Output:
+User Interface:
 ![image](https://github.com/user-attachments/assets/84824cfa-51a3-457e-bdd9-00eda78104a1)
 
 Prometheus Monitoring:
