@@ -36,3 +36,13 @@ services:
       - PYTHONUNBUFFERED=1
     networks:
       - app-network
+
+  prometheus:
+    image: prom/prometheus:v2.45.0
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      app-network:
+        ipv4_address: 172.20.0.10

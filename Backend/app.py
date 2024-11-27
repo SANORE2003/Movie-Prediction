@@ -6,12 +6,54 @@ from NMF import AdvancedMovieRecommender
 import logging
 import numpy as np
 
+# Prometheus Metrics
+from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
+from functools import wraps
+import time
+
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
+
+# Prometheus Metrics Setup
+REQUEST_COUNT = Counter(
+    'app_requests_total', 
+    'Total Request Count', 
+    ['method', 'endpoint', 'http_status']
+)
+
+REQUEST_LATENCY = Histogram(
+    'app_request_latency_seconds', 
+    'Request Latency', 
+    ['method', 'endpoint']
+)
+
+PREDICTION_PROCESSING_TIME = Histogram(
+    'prediction_processing_time_seconds', 
+    'Time spent processing predictions'
+)
+
+def track_metrics(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        request_latency = REQUEST_LATENCY.labels(request.method, request.path)
+        start_time = time.time()
+        
+        try:
+            response = f(*args, **kwargs)
+            status_code = response[1] if isinstance(response, tuple) else 200
+            
+            REQUEST_COUNT.labels(request.method, request.path, status_code).inc()
+            request_latency.observe(time.time() - start_time)
+            
+            return response
+        except Exception as e:
+            REQUEST_COUNT.labels(request.method, request.path, 500).inc()
+            raise
+    return wrapper
 
 def load_model(model_path='NMF.joblib'):
     """Load and reconstruct the model from saved components"""
@@ -44,7 +86,12 @@ def load_model(model_path='NMF.joblib'):
 # Load the model when the app starts
 recommender = load_model()
 
+@app.route('/metrics', methods=['GET'])
+def metrics():
+    return generate_latest(), 200, {'Content-Type': CONTENT_TYPE_LATEST}
+
 @app.route('/predict', methods=['POST'])
+@track_metrics
 def predict_rating():
     if recommender is None:
         return jsonify({"error": "Model not loaded correctly"}), 500
@@ -59,9 +106,11 @@ def predict_rating():
         user_id = int(data['user_id'])
         movie_id = int(data['movie_id'])
         
-        # Get prediction
-        prediction = recommender.predict_rating(user_id, movie_id)
-        logger.debug(f"Raw prediction result: {prediction}")
+        # Track prediction processing time
+        with PREDICTION_PROCESSING_TIME.time():
+            # Get prediction
+            prediction = recommender.predict_rating(user_id, movie_id)
+            logger.debug(f"Raw prediction result: {prediction}")
         
         # Handle different prediction formats
         if isinstance(prediction, dict):
@@ -139,5 +188,4 @@ if __name__ == '__main__':
         logger.error("Failed to load model. Please check if 'NMF.joblib' exists and is valid.")
     else:
         logger.info("Model loaded successfully. Starting server...")
-        # In production, you might want to set debug=False
         app.run(host='0.0.0.0', port=5000)
