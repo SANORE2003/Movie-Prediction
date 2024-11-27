@@ -1,19 +1,25 @@
 Movie Rating Prediction Project
+
 Overview
 This project aims to develop a movie rating prediction system using Non-Negative Matrix Factorization (NMF). Key aspects include:
 
-NMF Explanation: Describes how NMF works and why it was chosen.
-Model Development and Persistence: Details the approach to saving and loading the NMF model.
-Frontend Development: Outlines the user-friendly React-based interface.
-Containerization Strategy: Explains the Docker implementation.
-CI/CD with GitHub Actions: Discusses the continuous integration and deployment pipeline.
-Prometheus Monitoring: Describes system performance tracking.
+Non-Negative Matrix Factorization is an intelligent data analysis technique that transforms complex, large-scale data into simpler, more interpretable components. Imagine it as a sophisticated detective that breaks down a massive puzzle (your movie ratings) into smaller, more manageable pieces.
+In our movie recommendation system, NMF acts like a behind-the-scenes translator that converts complicated user-movie interactions into meaningful patterns. Instead of treating ratings as random numbers, it discovers hidden connections and preferences.
+
+Key Aspects
+
+1.NMF Creation(ML Model)
+2.Model Development & Persistence
+3.Frontend Development and Backend Development
+4.Docker Containerization Strategy
+5.CI/CD with GitHub Actions
+6.Prometheus Monitoring
 
 Project Setup
 Prerequisites
 
-Git
-Docker Desktop
+1.Git
+2.Docker Desktop
 
 Cloning
 
