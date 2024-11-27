@@ -6,6 +6,17 @@ This project aims to develop a movie rating prediction system using Non-Negative
 Non-Negative Matrix Factorization is an intelligent data analysis technique that transforms complex, large-scale data into simpler, more interpretable components. Imagine it as a sophisticated detective that breaks down a massive puzzle (your movie ratings) into smaller, more manageable pieces.
 In our movie recommendation system, NMF acts like a behind-the-scenes translator that converts complicated user-movie interactions into meaningful patterns. Instead of treating ratings as random numbers, it discovers hidden connections and preferences.
 
+About the Project
+The Movie Rating Prediction project bridges advanced machine learning techniques with user-centric design to deliver an intelligent recommendation system for movie ratings. At its core, the project employs Non-Negative Matrix Factorization (NMF) for accurate and explainable predictions.
+
+Tools Used:
+1.Python 
+2.Flask
+3.React
+4.Vite-project Framework
+5.Docker
+6.Prometheus for monitoring 
+
 Key Aspects
 
 1.NMF Creation(ML Model)
